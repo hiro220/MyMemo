@@ -35,7 +35,7 @@ public class MemoHelper extends SQLiteOpenHelper {
 
     /* 以下、他クラスから呼び出すメソッド */
 
-    public void createDate(String id) {
+    public void createData(String id) {
         // 新しくメモをデータベースに保存
         try (SQLiteDatabase db = this.getWritableDatabase()) {
             ContentValues cv = new ContentValues();

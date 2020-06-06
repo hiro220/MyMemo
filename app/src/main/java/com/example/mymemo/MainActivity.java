@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         id = uuid;
         position = adapter.getCount();
         helper = new MemoHelper(this);
-        helper.createDate(uuid);
+        helper.createData(uuid);
         Cursor c;
         try (SQLiteDatabase db = helper.getWritableDatabase()) {
             // データベースから全てのメモを取得
