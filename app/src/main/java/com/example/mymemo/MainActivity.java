@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+// コミットテスト
+
 public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "MainActivity";
