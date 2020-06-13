@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
+    protected void onResume() {
         // アクティビティのスタート処理
         // データの取得
         // うまくいかない
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        super.onStart();
+        super.onResume();
     }
 
     @Override
