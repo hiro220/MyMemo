@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static String TAG = "MainActivity";
     private MemoHelper helper = null;       // メモのデータベース操作オブジェクト
-    private String id = "";                      // 編集中のメモid
+    private String id = "";                 // 編集中のメモid
     private int position;
     private MyListAdapter adapter;          // 自作adapter
 
@@ -43,9 +43,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 createNewMemo();
-                // 下にメッセージを表示
-                // Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
             }
         });
 
@@ -59,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         // アクティビティのスタート処理
         // データの取得
-        // うまくいかない
         Log.i(TAG, "onResume()");
         Log.i(TAG, "編集していたメモ: "+id);
         helper = new MemoHelper(this);
@@ -74,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                 String date = c.getString(1);
                 Log.i(TAG, "アップデート:"+id+title+date);
                 adapter.update(position, id, c.getString(0), c.getString(1));
-                //adapter.notifyDataSetChanged();
             }
 
         }
@@ -96,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -107,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     /* 以下、オリジナルのメソッド */
 
     private ListItem setListItemParam(String uuid, String title, String date) {
+        // adapterにセットするItemを作成
         ListItem item = new ListItem();
         item.setUuid(uuid);
         item.setTitle(title);
@@ -167,13 +162,16 @@ public class MainActivity extends AppCompatActivity {
         // 新しいidの作成
         String uuid = UUID.randomUUID().toString();
         Log.i(TAG, "新しいメモの作成: "+uuid);
+        // 編集するメモのuuidを保持
         id = uuid;
+        // 新規メモをデータベースに格納
         position = adapter.getCount();
         helper = new MemoHelper(this);
         helper.createData(uuid);
+        // 新規メモをadapterに追加
         Cursor c;
         try (SQLiteDatabase db = helper.getWritableDatabase()) {
-            // データベースから全てのメモを取得
+            // データベースから作成したメモを取得
             String[] args = {uuid};
             c = db.rawQuery("SELECT title FROM MEMO_TABLE WHERE uuid=?", args);
             c.moveToFirst();

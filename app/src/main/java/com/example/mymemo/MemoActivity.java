@@ -17,7 +17,7 @@ public class MemoActivity extends AppCompatActivity {
 
     private static String TAG = "MemoActivity";
     private MemoHelper helper = null;   // データベース操作オブジェクト
-    private String id;             // メモのid
+    private String id;                  // メモのid
 
     @Override
     protected void onCreate(Bundle saveInstanceState){
