@@ -105,11 +105,11 @@ public class MemoHelper extends SQLiteOpenHelper {
                                  " WHERE uuid=?", args);
             c.moveToFirst();
             title = c.getString(0);
-            // 更新日時を取得
+            // 降順で更新日時を取得
             c = db.rawQuery("SELECT date " +
                             "FROM " + Date_Table +
                             " WHERE memo_uuid=?" +
-                            " ORDER BY date", args);
+                            " ORDER BY date DESC", args);
             boolean eol = c.moveToFirst();
             for (int i=0; i < 3 && eol; i++){
                 date[i] = c.getString(0);
