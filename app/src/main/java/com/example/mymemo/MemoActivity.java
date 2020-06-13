@@ -59,7 +59,7 @@ public class MemoActivity extends AppCompatActivity {
         String title = title_field.getText().toString();
         // 現在時刻の取得
         Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         String now = sdf.format(date);
         helper.saveData(id, title, text, now);
 

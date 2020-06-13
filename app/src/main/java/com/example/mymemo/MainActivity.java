@@ -120,14 +120,16 @@ public class MainActivity extends AppCompatActivity {
         helper = new MemoHelper(this);
         try (SQLiteDatabase db = helper.getWritableDatabase()) {
             // データベースから全てのメモを取得
-            c = db.rawQuery("SELECT uuid, title, date FROM MEMO_TABLE", null);
+            c = db.rawQuery("SELECT uuid, title FROM MEMO_TABLE", null);
             // 一つ一つリストに追加する
             final ArrayList<ListItem> data = new ArrayList<>();
             boolean eog = c.moveToFirst();
             while (eog) {
+                Cursor c_date = db.rawQuery("SELECT date FROM DATE_TABLE WHERE uuid=" + c.getString(0),
+                                            null);
                 ListItem item = setListItemParam(c.getString(0),
                                                  c.getString(1),
-                                                 c.getString(2));
+                                                 c_date.getString(0));
                 data.add(item);
                 eog = c.moveToNext();
             }
@@ -173,12 +175,11 @@ public class MainActivity extends AppCompatActivity {
         try (SQLiteDatabase db = helper.getWritableDatabase()) {
             // データベースから全てのメモを取得
             String[] args = {uuid};
-            c = db.rawQuery("SELECT title, date FROM MEMO_TABLE WHERE uuid=?", args);
+            c = db.rawQuery("SELECT title FROM MEMO_TABLE WHERE uuid=?", args);
             c.moveToFirst();
             String title = c.getString(0);
-            String date = c.getString(1);
         }
-        ListItem item = setListItemParam(id, c.getString(0), c.getString(1));
+        ListItem item = setListItemParam(id, c.getString(0), "null");
         adapter.add(item);
         startIntent(uuid);
     }
