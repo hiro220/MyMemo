@@ -21,7 +21,8 @@ class ListItem {
     void setTitle(String title) { this.title = title; }
 
     void setDate(String[] date) {
-        System.arraycopy(this.date, 0, date, 0, date.length);
+        // 深いコピー(コピー元配列, <-のコピー開始位置, コピー先配列, <-のコピー開始位置, コピーする要素数)
+        System.arraycopy(date, 0, this.date, 0, 3);
     }
 
 }
