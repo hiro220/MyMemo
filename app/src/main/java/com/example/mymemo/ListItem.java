@@ -4,7 +4,7 @@ class ListItem {
     private long id = 0;
     private String uuid = null;
     private String title = null;
-    private String date = null;
+    private String[] date = {null, null, null};
 
     long getId() { return id; }
 
@@ -12,7 +12,7 @@ class ListItem {
 
     String getTitle() { return title; }
 
-    String getDate() { return date; }
+    String[] getDate() { return date; }
 
     void setId(long id) { this.id = id; }
 
@@ -20,6 +20,8 @@ class ListItem {
 
     void setTitle(String title) { this.title = title; }
 
-    void setDate(String date) { this.date = date; }
+    void setDate(String[] date) {
+        System.arraycopy(this.date, 0, date, 0, date.length);
+    }
 
 }

@@ -48,7 +48,10 @@ public class MyListAdapter extends BaseAdapter {
             convertView = activity.getLayoutInflater().inflate(resource, null);
         }
         ((TextView) convertView.findViewById(R.id.title)).setText(item.getTitle());
-        ((TextView) convertView.findViewById(R.id.date)).setText(item.getDate());
+        String[] date = item.getDate();
+        ((TextView) convertView.findViewById(R.id.date1)).setText(date[0]);
+        ((TextView) convertView.findViewById(R.id.date2)).setText(date[1]);
+        ((TextView) convertView.findViewById(R.id.date3)).setText(date[2]);
 
         return convertView;
     }
@@ -70,10 +73,10 @@ public class MyListAdapter extends BaseAdapter {
     }
 
     // 要素を更新
-    public void update(int position, String uuid, String title, String date) {
+    public void update(int position, ListItem data) {
         ListItem item = (ListItem) getItem(position);
-        item.setTitle(title);
-        item.setDate(date);
+        item.setTitle(data.getTitle());
+        item.setDate(data.getDate());
         notifyDataSetChanged();
     }
 }

@@ -58,22 +58,12 @@ public class MainActivity extends AppCompatActivity {
         // データの取得
         Log.i(TAG, "onResume()");
         Log.i(TAG, "編集していたメモ: "+id);
-        helper = new MemoHelper(this);
-        Cursor c;
-        try (SQLiteDatabase db = helper.getWritableDatabase()) {
-            // データベースから全てのメモを取得
-            String[] args = {id};
-            c = db.rawQuery("SELECT title, date FROM MEMO_TABLE WHERE uuid=?", args);
-            boolean eog = c.moveToFirst();
-            if (eog) {
-                String title = c.getString(0);
-                String date = c.getString(1);
-                Log.i(TAG, "アップデート:"+id+title+date);
-                adapter.update(position, id, c.getString(0), c.getString(1));
-            }
-
+        // 編集していたデータの更新
+        if (id != "") {
+            helper = new MemoHelper(this);
+            ListItem item = helper.getOneItem(id);
+            adapter.update(position, item);
         }
-
         super.onResume();
     }
 
@@ -100,62 +90,39 @@ public class MainActivity extends AppCompatActivity {
 
     /* 以下、オリジナルのメソッド */
 
-    private ListItem setListItemParam(String uuid, String title, String date) {
-        // adapterにセットするItemを作成
-        ListItem item = new ListItem();
-        item.setUuid(uuid);
-        item.setTitle(title);
-        item.setDate(date);
-        return item;
-    }
-
     private void setFirstAdapter() {
-        Cursor c;
         // ヘルパーの準備
         helper = new MemoHelper(this);
-        try (SQLiteDatabase db = helper.getWritableDatabase()) {
-            // データベースから全てのメモを取得
-            c = db.rawQuery("SELECT uuid, title FROM MEMO_TABLE", null);
-            // 一つ一つリストに追加する
-            final ArrayList<ListItem> data = new ArrayList<>();
-            boolean eog = c.moveToFirst();
-            while (eog) {
-                Cursor c_date = db.rawQuery("SELECT date FROM DATE_TABLE WHERE uuid=" + c.getString(0),
-                                            null);
-                ListItem item = setListItemParam(c.getString(0),
-                                                 c.getString(1),
-                                                 c_date.getString(0));
-                data.add(item);
-                eog = c.moveToNext();
-            }
-            // リストビューにセット
-            adapter = new MyListAdapter(this, data, R.layout.item_list);
-            ListView list = findViewById(R.id.list);
-            list.setAdapter(adapter);
-            // リストのアイテムを選択したとき
-            list.setOnItemClickListener(
-                    new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            id = adapter.getUUID(i);
-                            position = i;
-                            startIntent(id);
-                        }
+        // データベースから全てのメモを取得
+        final ArrayList<ListItem> items = helper.getAllItem();
+        // アダプターの作成
+        adapter = new MyListAdapter(this, items, R.layout.item_list);
+        // リストビューにセット
+        ListView list = findViewById(R.id.list);
+        list.setAdapter(adapter);
+        // リストのアイテムを選択したとき
+        list.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        id = adapter.getUUID(i);
+                        position = i;
+                        startIntent(id);
                     }
-            );
+                }
+        );
 
-            // 長押しでメモを削除
-            list.setOnItemLongClickListener(
-                    new AdapterView.OnItemLongClickListener() {
-                        @Override
-                        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            deleteData(adapter.getUUID(i));
-                            adapter.remove(i);
-                            return true;    // クリックの処理は発生させない
-                        }
+        // 長押しでメモを削除
+        list.setOnItemLongClickListener(
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        deleteData(adapter.getUUID(i));
+                        adapter.remove(i);
+                        return true;    // クリックの処理は発生させない
                     }
-            );
-        }
+                }
+        );
     }
 
     private void createNewMemo(){
@@ -169,15 +136,7 @@ public class MainActivity extends AppCompatActivity {
         helper = new MemoHelper(this);
         helper.createData(uuid);
         // 新規メモをadapterに追加
-        Cursor c;
-        try (SQLiteDatabase db = helper.getWritableDatabase()) {
-            // データベースから作成したメモを取得
-            String[] args = {uuid};
-            c = db.rawQuery("SELECT title FROM MEMO_TABLE WHERE uuid=?", args);
-            c.moveToFirst();
-            String title = c.getString(0);
-        }
-        ListItem item = setListItemParam(id, c.getString(0), "null");
+        ListItem item = helper.getOneItem(uuid);
         adapter.add(item);
         startIntent(uuid);
     }

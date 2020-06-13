@@ -1,10 +1,13 @@
 package com.example.mymemo;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.Context;
 import android.util.Log;
+
+import java.util.ArrayList;
 
 public class MemoHelper extends SQLiteOpenHelper {
 
@@ -70,7 +73,7 @@ public class MemoHelper extends SQLiteOpenHelper {
 
             // 更新日の登録
             cv.put("date", date);
-            cv.put("uuid", id);
+            cv.put("memo_uuid", id);
             db.insert(Date_Table, null, cv);
 
             Log.i(TAG, "データの更新: "+id);
@@ -86,5 +89,60 @@ public class MemoHelper extends SQLiteOpenHelper {
 
             Log.i(TAG, "データの削除: "+uuid);
         }
+    }
+
+    public ListItem getOneItem(String uuid){
+        // uuidのデータを取得し、ListItemに変換する
+        Cursor c;
+        String title;
+        String[] date = new String[3];
+        String[] args = {uuid};
+
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            // タイトルを取得
+            c = db.rawQuery("SELECT title " +
+                                 "FROM " + Memo_Table +
+                                 " WHERE uuid=?", args);
+            c.moveToFirst();
+            title = c.getString(0);
+            // 更新日時を取得
+            c = db.rawQuery("SELECT date " +
+                            "FROM " + Date_Table +
+                            " WHERE memo_uuid=?" +
+                            " ORDER BY date", args);
+            boolean eol = c.moveToFirst();
+            for (int i=0; i < 3 && eol; i++){
+                date[i] = c.getString(0);
+                Log.i(TAG, "date: " + date[i]);
+                eol = c.moveToNext();
+            }
+        }
+        c.close();
+        // ListItemを作成
+        ListItem item = new ListItem();
+        item.setUuid(uuid);
+        item.setTitle(title);
+        item.setDate(date);
+
+        return item;
+    }
+
+    public ArrayList<ListItem> getAllItem(){
+        ArrayList<ListItem> items = new ArrayList<>();
+        Cursor c;
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            c = db.rawQuery("SELECT uuid" +
+                                " FROM " + Memo_Table, null);
+            // 全てのデータをArrayListに格納
+            boolean eol = c.moveToFirst();
+            while (eol) {
+                ListItem item = getOneItem(c.getString(0));
+                Log.i(TAG, "uuid: "+c.getString(0));
+                items.add(item);
+                eol = c.moveToNext();
+            }
+        }
+        c.close();
+        return items;
     }
 }
