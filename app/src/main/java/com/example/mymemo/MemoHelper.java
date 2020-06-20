@@ -13,7 +13,7 @@ public class MemoHelper extends SQLiteOpenHelper {
 
     private static String TAG = "MemoHelper";
     static final private String DBName = "Memo_DB";         // データベースの名前
-    static final private int VERSION = 4;                   // データベースのバージョン
+    static final private int VERSION = 5;                   // データベースのバージョン
 
     static final private String Memo_Table = "MEMO_TABLE";  // メモのテーブルの名前
     static final private String Date_Table = "DATE_TABLE";  // 更新時間のテーブルの名前
@@ -31,9 +31,10 @@ public class MemoHelper extends SQLiteOpenHelper {
                 "body TEXT)");
         // DATE_TABLE
         db.execSQL("CREATE TABLE " + Date_Table + "(" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "date TEXT, " +
-                "memo_uuid TEXT)");
+                "memo_uuid TEXT PRIMARY KEY," +
+                "date1 TEXT, " +
+                "date2 TEXT, " +
+                "date3 TEXT)");
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
@@ -49,10 +50,19 @@ public class MemoHelper extends SQLiteOpenHelper {
         // 新しくメモをデータベースに保存
         try (SQLiteDatabase db = this.getWritableDatabase()) {
             ContentValues cv = new ContentValues();
+            // uuid, タイトル, 本文の保存
             cv.put("uuid", id);
             cv.put("title", "名前のないメモ");
             cv.put("body", "");
             db.insert(Memo_Table, null, cv);
+
+            cv.clear();
+            // 日時の保存
+            cv.put("memo_uuid", id);
+            cv.put("date1", "");
+            cv.put("date2", "");
+            cv.put("date3", "");
+            db.insert(Date_Table, null, cv);
 
             Log.i(TAG, "新しいデータの登録: "+id);
         }
@@ -71,12 +81,18 @@ public class MemoHelper extends SQLiteOpenHelper {
             // cvにセットした値をクリア
             cv.clear();
 
-            // 更新日の登録
-            cv.put("date", date);
-            cv.put("memo_uuid", id);
-            db.insert(Date_Table, null, cv);
+            // 更新日の更新
+            Cursor c = db.rawQuery("SELECT date1, date2" +
+                                        " FROM " + Date_Table +
+                                        " WHERE memo_uuid=?", args);
+            c.moveToFirst();
+            cv.put("date1", date);
+            cv.put("date2", c.getString(0));
+            cv.put("date3", c.getString(1));
+            db.update(Date_Table, cv, "memo_uuid=?", args);
 
             Log.i(TAG, "データの更新: "+id);
+
         }
     }
 
@@ -105,16 +121,15 @@ public class MemoHelper extends SQLiteOpenHelper {
                                  " WHERE uuid=?", args);
             c.moveToFirst();
             title = c.getString(0);
-            // 降順で更新日時を取得
-            c = db.rawQuery("SELECT date " +
+
+            // 更新日時を取得
+            c = db.rawQuery("SELECT date1, date2, date3 " +
                             "FROM " + Date_Table +
-                            " WHERE memo_uuid=?" +
-                            " ORDER BY date DESC", args);
+                            " WHERE memo_uuid=?", args);
             boolean eol = c.moveToFirst();
             for (int i=0; i < 3 && eol; i++){
-                date[i] = c.getString(0);
+                date[i] = c.getString(i);
                 Log.i(TAG, "date: " + date[i]);
-                eol = c.moveToNext();
             }
         }
         c.close();
