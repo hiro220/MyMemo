@@ -101,7 +101,7 @@ public class MemoHelper extends SQLiteOpenHelper {
         try (SQLiteDatabase db = this.getWritableDatabase()) {
             String[] args = {uuid};
             db.delete(Memo_Table, "uuid=?", args);
-            db.delete(Date_Table, "uuid=?", args);
+            db.delete(Date_Table, "memo_uuid=?", args);
 
             Log.i(TAG, "データの削除: "+uuid);
         }
