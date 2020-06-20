@@ -90,6 +90,7 @@ public class MemoHelper extends SQLiteOpenHelper {
             cv.put("date2", c.getString(0));
             cv.put("date3", c.getString(1));
             db.update(Date_Table, cv, "memo_uuid=?", args);
+            c.close();
 
             Log.i(TAG, "データの更新: "+id);
 
