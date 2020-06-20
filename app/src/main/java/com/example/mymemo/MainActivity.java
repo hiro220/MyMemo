@@ -7,6 +7,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
 import android.util.Log;
 import android.view.View;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DeleteCheckDialogFlagment.DeleteCheckDialogListener {
 
     private static String TAG = "MainActivity";
     private MemoHelper helper = null;       // メモのデータベース操作オブジェクト
@@ -117,8 +118,11 @@ public class MainActivity extends AppCompatActivity {
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        deleteData(adapter.getUUID(i));
-                        adapter.remove(i);
+                        DialogFragment dialog = new DeleteCheckDialogFlagment();
+                        Bundle args = new Bundle();
+                        args.putInt("position", i);
+                        dialog.setArguments(args);
+                        dialog.show(getSupportFragmentManager(), "dialog_button");
                         return true;    // クリックの処理は発生させない
                     }
                 }
@@ -141,11 +145,14 @@ public class MainActivity extends AppCompatActivity {
         startIntent(uuid);
     }
 
-    private void deleteData(String data_id){
+    private void deleteData(int i){
         // データベースから指定のuuidのデータを削除
+        String data_id = adapter.getUUID(i);
         Log.i(TAG, "データの削除: "+data_id);
         helper = new MemoHelper(this);
         helper.deleteMemo(data_id);
+        // adapterから削除
+        adapter.remove(i);
     }
 
     private void startIntent(String data_id){
@@ -155,5 +162,15 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("id", data_id);
         // メモのアクティビティを開始
         startActivity(intent);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, int i) {
+        Log.i(TAG, "onDialogPositiveClick: 添字i = "+String.valueOf(i));
+        deleteData(i);
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog, int i) {
     }
 }
