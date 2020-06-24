@@ -52,6 +52,8 @@ public class DeleteCheckDialogFlagment extends DialogFragment {
                 listener.onDialogNegativeClick(DeleteCheckDialogFlagment.this, position);
             }
         });
+
+        Log.i(TAG, "削除確認ダイアログの表示");
         return builder.create();
     }
 
