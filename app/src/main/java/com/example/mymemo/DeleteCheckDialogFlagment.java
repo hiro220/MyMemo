@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment;
 import java.util.Objects;
 
 public class DeleteCheckDialogFlagment extends DialogFragment {
-    private static String TAG = "MainActivity";
+    private static String TAG = "DeleteCheckDialogFlagment";
 
     public interface DeleteCheckDialogListener {
         // ボタンクリック時の処理のプロトタイプ宣言(処理は使用するアクティビティで定義する)
