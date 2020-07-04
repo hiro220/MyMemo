@@ -118,7 +118,7 @@ public class MemoHelper extends SQLiteOpenHelper {
 
         try (SQLiteDatabase db = getWritableDatabase()) {
             // タイトルを取得
-            c = db.rawQuery("SELECT title, body " +
+            c = db.rawQuery("SELECT title " +
                                  "FROM " + Memo_Table +
                                  " WHERE uuid=?", args);
             c.moveToFirst();
@@ -140,7 +140,6 @@ public class MemoHelper extends SQLiteOpenHelper {
         ListItem item = new ListItem();
         item.setUuid(uuid);
         item.setTitle(title);
-        item.setBody(body);
         item.setDate(date);
 
         return item;

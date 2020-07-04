@@ -4,7 +4,6 @@ class ListItem {
     private long id = 0;
     private String uuid = null;
     private String title = null;
-    private String body = null;
     private String[] date = {null, null, null};
 
     long getId() { return id; }
@@ -13,8 +12,6 @@ class ListItem {
 
     String getTitle() { return title; }
 
-    String getBody() { return body; }
-
     String[] getDate() { return date; }
 
     void setId(long id) { this.id = id; }
@@ -22,8 +19,6 @@ class ListItem {
     void setUuid(String uuid) { this.uuid = uuid; }
 
     void setTitle(String title) { this.title = title; }
-
-    void setBody(String body) { this.body = body; }
 
     void setDate(String[] date) {
         // 深いコピー(コピー元配列, <-のコピー開始位置, コピー先配列, <-のコピー開始位置, コピーする要素数)
