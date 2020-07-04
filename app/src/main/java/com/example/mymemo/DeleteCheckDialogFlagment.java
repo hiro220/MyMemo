@@ -14,12 +14,19 @@ import java.util.Objects;
 public class DeleteCheckDialogFlagment extends DialogFragment {
     private static String TAG = "DeleteCheckDialogFlagment";
 
+    /*
+    interface: メソッド、変数の処理内容は書かずに宣言だけしておける
+    今回、ダイアログクリック時の処理は他クラスのアクティビティに影響を与えたい。
+    interfaceで宣言したメソッドを他クラスで定義することで、処理にそのクラスのメソッド、変数が利用できる。
+    ダイアログのボタンクリック時に以下のメソッドを呼ぶことで、ダイアログ呼び出しクラスで対応する処理ができる。
+     */
     public interface DeleteCheckDialogListener {
         // ボタンクリック時の処理のプロトタイプ宣言(処理は使用するアクティビティで定義する)
         public void onDialogPositiveClick(DialogFragment dialog, int i);
         public void onDialogNegativeClick(DialogFragment dialog, int i);
     }
 
+    // 上記interface変数
     DeleteCheckDialogListener listener;
 
     @Override
