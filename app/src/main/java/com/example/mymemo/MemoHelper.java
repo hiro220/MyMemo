@@ -112,16 +112,18 @@ public class MemoHelper extends SQLiteOpenHelper {
         // uuidのデータを取得し、ListItemに変換する
         Cursor c;
         String title;
+        String body;
         String[] date = new String[3];
         String[] args = {uuid};
 
         try (SQLiteDatabase db = getWritableDatabase()) {
             // タイトルを取得
-            c = db.rawQuery("SELECT title " +
+            c = db.rawQuery("SELECT title, body " +
                                  "FROM " + Memo_Table +
                                  " WHERE uuid=?", args);
             c.moveToFirst();
             title = c.getString(0);
+            body = c.getString(1);
 
             // 更新日時を取得
             c = db.rawQuery("SELECT date1, date2, date3 " +
@@ -138,6 +140,7 @@ public class MemoHelper extends SQLiteOpenHelper {
         ListItem item = new ListItem();
         item.setUuid(uuid);
         item.setTitle(title);
+        item.setBody(body);
         item.setDate(date);
 
         return item;
