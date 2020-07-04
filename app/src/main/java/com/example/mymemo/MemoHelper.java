@@ -172,6 +172,7 @@ public class MemoHelper extends SQLiteOpenHelper {
             c = db.rawQuery("SELECT body" +
                     " FROM " + Memo_Table +
                     " WHERE uuid=?", args);
+            c.moveToFirst();
             body = c.getString(0);
         }
         c.close();
