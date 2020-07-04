@@ -36,7 +36,7 @@ public class MemoActivity extends AppCompatActivity {
         EditText field = findViewById(R.id.textfield);
         EditText title_field = findViewById(R.id.titlefield);
         title_field.setText(item.getTitle());
-        field.setText(item.getBody());
+        field.setText(helper.getMemoBody(id));
     }
 
     @Override

@@ -164,4 +164,19 @@ public class MemoHelper extends SQLiteOpenHelper {
         c.close();
         return items;
     }
+
+    public String getMemoBody(String uuid){
+        // 指定のメモの本文を返す
+        String body;
+        Cursor c;
+        String[] args = {uuid};
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            c = db.rawQuery("SELECT body" +
+                    " FROM " + Memo_Table +
+                    " WHERE uuid=?", args);
+            body = c.getString(0);
+        }
+        c.close();
+        return body;
+    }
 }
