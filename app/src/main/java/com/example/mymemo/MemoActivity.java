@@ -29,20 +29,14 @@ public class MemoActivity extends AppCompatActivity {
 
         // ヘルパーの準備
         helper = new MemoHelper(this);
-        // データベースから指定のメモを取得
-        try (SQLiteDatabase db = helper.getWritableDatabase()) {
-            String[] args = {id};
-            Cursor c = (Cursor) db.rawQuery("SELECT title, body FROM MEMO_TABLE WHERE uuid=?", args);
 
-            // データベースから取得したタイトル、テキストをEditTextにセット
-            c.moveToFirst();
-            EditText field = findViewById(R.id.textfield);
-            EditText title_field = findViewById(R.id.titlefield);
-            String title = c.getString(0);
-            String text = c.getString(1);
-            title_field.setText(title);
-            field.setText(text);
-        }
+        // データベースから指定のメモを取得
+        ListItem item = helper.getOneItem(id);
+
+        EditText field = findViewById(R.id.textfield);
+        EditText title_field = findViewById(R.id.titlefield);
+        title_field.setText(item.getTitle());
+        field.setText(item.getBody());
     }
 
     @Override
