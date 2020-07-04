@@ -123,7 +123,6 @@ public class MemoHelper extends SQLiteOpenHelper {
                                  " WHERE uuid=?", args);
             c.moveToFirst();
             title = c.getString(0);
-            body = c.getString(1);
 
             // 更新日時を取得
             c = db.rawQuery("SELECT date1, date2, date3 " +
