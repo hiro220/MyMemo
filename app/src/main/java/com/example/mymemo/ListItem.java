@@ -13,7 +13,7 @@ class ListItem {
 
     String getTitle() { return title; }
 
-    String getbody() { return body; }
+    String getBody() { return body; }
 
     String[] getDate() { return date; }
 
