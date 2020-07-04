@@ -107,17 +107,22 @@ public class MainActivity extends AppCompatActivity implements DeleteCheckDialog
                 }
         );
 
-        // 長押しでメモを削除
+        // 長押しでメモを削除(確認ダイアログの表示)
         list.setOnItemLongClickListener(
                 new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        // ダイアログ
                         DialogFragment dialog = new DeleteCheckDialogFlagment();
+                        // ダイアログに渡すパラメータ設定
                         Bundle args = new Bundle();
                         args.putInt("position", i);
                         dialog.setArguments(args);
+                        // ダイアログの表示
                         dialog.show(getSupportFragmentManager(), "dialog_button");
-                        return true;    // クリックの処理は発生させない
+
+                        // クリックの処理は発生させない
+                        return true;
                     }
                 }
         );
@@ -160,11 +165,14 @@ public class MainActivity extends AppCompatActivity implements DeleteCheckDialog
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, int i) {
+        // ダイアログのPositiveButton(「はい」)クリック時処理
+        // ダイアログ表示時に長押ししたメモのadapterでの添字を引数で受け取っている
         Log.i(TAG, "onDialogPositiveClick: 添字i = "+String.valueOf(i));
         deleteData(i);
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog, int i) {
+        // ダイアログのNegativeButton(「いいえ」)クリック時処理
     }
 }

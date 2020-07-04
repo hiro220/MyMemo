@@ -15,6 +15,7 @@ public class DeleteCheckDialogFlagment extends DialogFragment {
     private static String TAG = "MainActivity";
 
     public interface DeleteCheckDialogListener {
+        // ボタンクリック時の処理のプロトタイプ宣言(処理は使用するアクティビティで定義する)
         public void onDialogPositiveClick(DialogFragment dialog, int i);
         public void onDialogNegativeClick(DialogFragment dialog, int i);
     }
@@ -34,18 +35,21 @@ public class DeleteCheckDialogFlagment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // ダイアログを使用するアクティビティからパラメータを受け取る
         Bundle args = Objects.requireNonNull(getArguments());
         final int position = args.getInt("position");
         // ダイアログを生成
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // ダイアログの設定
         builder.setTitle("確認").setMessage("削除しますか？");
+        // PositiveButtonクリック時処理
         builder.setPositiveButton("はい", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 listener.onDialogPositiveClick(DeleteCheckDialogFlagment.this, position);
             }
         });
+        // NegativeButtonクリック時処理
         builder.setNegativeButton("いいえ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
